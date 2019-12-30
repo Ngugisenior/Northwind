@@ -1,0 +1,128 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/NorthwindSite.Master" AutoEventWireup="true" CodeBehind="Products.aspx.cs" Inherits="Northwind.Products" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceholder1" runat="server">
+    <asp:SqlDataSource ID="ProductSource" runat="server" ConnectionString="<%$ ConnectionStrings:NorthwindConnectionString %>" SelectCommand="SELECT [ProductID], [ProductName], [QuantityPerUnit], [UnitPrice] FROM [Alphabetical list of products]"></asp:SqlDataSource>
+
+    <br />
+    <asp:LinkButton ID="InsertProduct" runat="server" OnClick="InsertProduct_Click">Insert New Product</asp:LinkButton>
+    <br />
+
+    <br />
+    <asp:GridView ID="GridProduct" runat="server" AllowPaging="True" AllowSorting="True" CellPadding="4" DataKeyNames="ProductID" DataSourceID="ProductSource" ForeColor="#333333" GridLines="None" PageSize="5">
+        <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+        <Columns>
+            <asp:CommandField ShowSelectButton="True" />
+        </Columns>
+        <EditRowStyle BackColor="#999999" />
+        <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+        <HeaderStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+        <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+        <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
+        <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
+        <SortedAscendingCellStyle BackColor="#E9E7E2" />
+        <SortedAscendingHeaderStyle BackColor="#506C8C" />
+        <SortedDescendingCellStyle BackColor="#FFFDF8" />
+        <SortedDescendingHeaderStyle BackColor="#6F8DAE" />
+    </asp:GridView>
+
+
+    <br />
+    <asp:SqlDataSource ID="DetailsSource" runat="server" ConnectionString="<%$ ConnectionStrings:NorthwindConnectionString %>" DeleteCommand="DELETE FROM [Products] WHERE [ProductID] = @ProductID" InsertCommand="INSERT INTO [Products] ([ProductName], [SupplierID], [CategoryID], [QuantityPerUnit], [UnitPrice], [UnitsInStock], [UnitsOnOrder], [ReorderLevel], [Discontinued]) VALUES (@ProductName, @SupplierID, @CategoryID, @QuantityPerUnit, @UnitPrice, @UnitsInStock, @UnitsOnOrder, @ReorderLevel, @Discontinued)" SelectCommand="SELECT * FROM [Products] WHERE ([ProductID] = @ProductID2)" UpdateCommand="UPDATE [Products] SET [ProductName] = @ProductName, [SupplierID] = @SupplierID, [CategoryID] = @CategoryID, [QuantityPerUnit] = @QuantityPerUnit, [UnitPrice] = @UnitPrice, [UnitsInStock] = @UnitsInStock, [UnitsOnOrder] = @UnitsOnOrder, [ReorderLevel] = @ReorderLevel, [Discontinued] = @Discontinued WHERE [ProductID] = @ProductID">
+        <DeleteParameters>
+            <asp:Parameter Name="ProductID" Type="Int32" />
+        </DeleteParameters>
+        <InsertParameters>
+            <asp:Parameter Name="ProductName" Type="String" />
+            <asp:Parameter Name="SupplierID" Type="Int32" />
+            <asp:Parameter Name="CategoryID" Type="Int32" />
+            <asp:Parameter Name="QuantityPerUnit" Type="String" />
+            <asp:Parameter Name="UnitPrice" Type="Decimal" />
+            <asp:Parameter Name="UnitsInStock" Type="Int16" />
+            <asp:Parameter Name="UnitsOnOrder" Type="Int16" />
+            <asp:Parameter Name="ReorderLevel" Type="Int16" />
+            <asp:Parameter Name="Discontinued" Type="Boolean" />
+        </InsertParameters>
+        <SelectParameters>
+            <asp:ControlParameter ControlID="GridProduct" Name="ProductID2" PropertyName="SelectedValue" Type="Int32" />
+        </SelectParameters>
+        <UpdateParameters>
+            <asp:Parameter Name="ProductName" Type="String" />
+            <asp:Parameter Name="SupplierID" Type="Int32" />
+            <asp:Parameter Name="CategoryID" Type="Int32" />
+            <asp:Parameter Name="QuantityPerUnit" Type="String" />
+            <asp:Parameter Name="UnitPrice" Type="Decimal" />
+            <asp:Parameter Name="UnitsInStock" Type="Int16" />
+            <asp:Parameter Name="UnitsOnOrder" Type="Int16" />
+            <asp:Parameter Name="ReorderLevel" Type="Int16" />
+            <asp:Parameter Name="Discontinued" Type="Boolean" />
+            <asp:Parameter Name="ProductID" Type="Int32" />
+        </UpdateParameters>
+    </asp:SqlDataSource>
+    <br />
+    <asp:SqlDataSource ID="SuppliersSource" runat="server" ConnectionString="<%$ ConnectionStrings:NorthwindConnectionString %>" SelectCommand="SELECT [SupplierID], [CompanyName] FROM [Suppliers] ORDER BY [CompanyName]"></asp:SqlDataSource>
+    <br />
+    <asp:SqlDataSource ID="CategoriesSource" runat="server" ConnectionString="<%$ ConnectionStrings:NorthwindConnectionString %>" SelectCommand="SELECT [CategoryID], [CategoryName] FROM [Categories] ORDER BY [CategoryName]"></asp:SqlDataSource>
+    <br />
+    <br />
+    <asp:DetailsView ID="DetailsView1" runat="server" AutoGenerateDeleteButton="True" AutoGenerateEditButton="True" AutoGenerateInsertButton="True" AutoGenerateRows="False" CellPadding="4" DataKeyNames="ProductID" DataSourceID="DetailsSource" ForeColor="#333333" GridLines="None" Height="50px" Width="400px">
+        <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+        <CommandRowStyle BackColor="#E2DED6" Font-Bold="True" />
+        <EditRowStyle BackColor="#999999" />
+        <FieldHeaderStyle BackColor="#E9ECF1" Font-Bold="True" />
+        <Fields>
+            <asp:BoundField DataField="ProductID" HeaderText="ProductID" InsertVisible="False" ReadOnly="True" SortExpression="ProductID" />
+            <asp:BoundField DataField="ProductName" HeaderText="ProductName" SortExpression="ProductName" />
+            <asp:TemplateField HeaderText="Supplier" SortExpression="SupplierID">
+
+                <EditItemTemplate>
+                    <asp:DropDownList ID="DrDSupplier" runat="server" DataSourceID="SuppliersSource" DataTextField="CompanyName" DataValueField="SupplierID" SelectedValue='<%# Bind("SupplierID") %>'></asp:DropDownList>
+                </EditItemTemplate>
+
+                <InsertItemTemplate>
+                    <asp:DropDownList ID="DrDSupplier" runat="server" DataSourceID="SuppliersSource" DataTextField="CompanyName" DataValueField="SupplierID"  SelectedValue='<%# Bind("SupplierID") %>'></asp:DropDownList>
+                </InsertItemTemplate>
+
+                <ItemTemplate>
+                    <asp:DropDownList ID="DrDSupplier" runat="server" DataSourceID="SuppliersSource" DataTextField="CompanyName" DataValueField="SupplierID"  SelectedValue='<%# Bind("SupplierID") %>'></asp:DropDownList>
+                </ItemTemplate>
+
+            </asp:TemplateField>
+
+            <asp:TemplateField HeaderText="Category" SortExpression="CategoryID">
+
+                <EditItemTemplate>
+                    <asp:DropDownList ID="DrDCategory" runat="server" DataSourceID="CategoriesSource" DataTextField="CategoryName" DataValueField="CategoryID"
+                        SelectedValue='<%# Bind("CategoryID") %>'></asp:DropDownList>
+                </EditItemTemplate>
+
+                <InsertItemTemplate>
+                    <asp:DropDownList ID="DrDCategory" runat="server" DataSourceID="CategoriesSource" DataTextField="CategoryName" DataValueField="CategoryID"
+                        SelectedValue='<%# Bind("CategoryID") %>'></asp:DropDownList>
+                </InsertItemTemplate>
+
+                <ItemTemplate>
+                    <asp:DropDownList ID="DrDCategory" runat="server" DataSourceID="CategoriesSource" DataTextField="CategoryName" DataValueField="CategoryID"
+                        SelectedValue='<%# Bind("CategoryID") %>'></asp:DropDownList>
+                </ItemTemplate>
+
+            </asp:TemplateField>
+            <asp:BoundField DataField="QuantityPerUnit" HeaderText="QuantityPerUnit" SortExpression="QuantityPerUnit" />
+            <asp:BoundField DataField="UnitPrice" HeaderText="UnitPrice" SortExpression="UnitPrice" />
+            <asp:BoundField DataField="UnitsInStock" HeaderText="UnitsInStock" SortExpression="UnitsInStock" />
+            <asp:BoundField DataField="UnitsOnOrder" HeaderText="UnitsOnOrder" SortExpression="UnitsOnOrder" />
+            <asp:BoundField DataField="ReorderLevel" HeaderText="ReorderLevel" SortExpression="ReorderLevel" />
+            <asp:CheckBoxField DataField="Discontinued" HeaderText="Discontinued" SortExpression="Discontinued" />
+            <asp:CommandField ShowEditButton="True" ShowInsertButton="True" />
+        </Fields>
+        <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+        <HeaderStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+        <HeaderTemplate>
+            Products
+        </HeaderTemplate>
+        <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+        <RowStyle BackColor="#F7F6F3" ForeColor="#333333" />
+    </asp:DetailsView>
+
+
+</asp:Content>
